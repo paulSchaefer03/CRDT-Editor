@@ -1,0 +1,20 @@
+{
+  "name": "crdt_editor_react",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd client && npm install && npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "dependencies": {
+  "express": "^5.1.0",
+  "ws": "^8.18.1",
+  "@hocuspocus/server": "^2.15.2"
+}
+}
