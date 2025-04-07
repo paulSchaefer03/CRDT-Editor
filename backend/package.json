@@ -1,20 +1,17 @@
 {
-  "name": "crdt_editor_react",
+  "name": "crdt-hocuspocus-server",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd client && npm install && npm run build"
+    "build": "tsc --project tsconfig.json",
+    "start": "node dist/hocuspocusServer.js",
+    "dev": "npm run build && npm run start"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "description": "",
   "dependencies": {
-  "express": "^5.1.0",
-  "ws": "^8.18.1",
-  "@hocuspocus/server": "^2.15.2"
-}
+    "@hocuspocus/server": "^2.15.2",
+    "yjs": "^13.6.24"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
 }
