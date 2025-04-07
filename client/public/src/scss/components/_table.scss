@@ -19,11 +19,25 @@
           > * {
             margin-bottom: 0;
           }
+
+          p,
+          h1,
+          h2,
+          h3 {
+            &[data-text-align="left"] {
+              text-align: left;
+            }
+            &[data-text-align="right"] {
+              text-align: right;
+            }
+            &[data-text-align="justify"] {
+              text-align: justify;
+            }
+          }
         }
   
         th {
-          background-color: var(--tableBorder2);
-          font-weight: bold;
+          background-color: var(--editorBackground);
           text-align: left;
         }
   

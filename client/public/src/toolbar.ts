@@ -28,6 +28,12 @@ const tabellenAktionen: { name: string; cmd: (editor: Editor) => void }[] = [
   { name: 'Fix Tabelle', cmd: (editor) => editor.chain().focus().fixTables().run() },
 ];
 
+const textLayouts: { name: string; align: 'left' | 'right' | 'center' }[] = [
+  { name: 'Linksbündig', align: 'left' },
+  { name: 'Rechtsbündig', align: 'right' },
+  { name: 'Zentriert', align: 'center' },
+];
+
 export function erstelleToolbar(container: HTMLElement, editor: Editor) {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
@@ -107,6 +113,64 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor) {
   };
   toolbar.appendChild(tabWrap);
 
+  const layoutDropdown = document.createElement('div');
+  layoutDropdown.className = 'btn';
+  layoutDropdown.textContent = 'Layout ▼';
+
+  const layoutMenu = document.createElement('div');
+  layoutMenu.style.display = 'none';
+  layoutMenu.style.position = 'absolute';
+  layoutMenu.style.background = '#fff';
+  layoutMenu.style.border = '1px solid #ccc';
+  layoutMenu.style.padding = '0.5rem';
+  layoutMenu.style.zIndex = '10';
+
+  textLayouts.forEach(({ name, align }) => {
+    const btn = button(name, () => {
+      editor.chain().focus().setTextAlign(align).run();
+      layoutMenu.style.display = 'none';
+    });
+    layoutMenu.appendChild(btn);
+  });
+
+  const layoutWrap = document.createElement('div');
+  layoutWrap.style.position = 'relative';
+  layoutWrap.append(layoutDropdown, layoutMenu);
+  layoutDropdown.onclick = () => {
+    layoutMenu.style.display = layoutMenu.style.display === 'none' ? 'block' : 'none';
+  };
+  toolbar.appendChild(layoutWrap);
+
+  // 🖌️ Hintergrundfarbe-Dropdown
+  const highlightDropdown = document.createElement('div');
+  highlightDropdown.className = 'btn';
+  highlightDropdown.textContent = 'Highlight ▼';
+
+  const highlightMenu = document.createElement('div');
+  highlightMenu.style.display = 'none';
+  highlightMenu.style.position = 'absolute';
+  highlightMenu.style.background = '#fff';
+  highlightMenu.style.border = '1px solid #ccc';
+  highlightMenu.style.padding = '0.5rem';
+  highlightMenu.style.zIndex = '10';
+
+  farben.forEach(({ name, hex }) => {
+    const btn = button(name, () => {
+      editor.chain().focus().toggleHighlight({ color: hex }).run();
+      highlightMenu.style.display = 'none';
+    });
+    btn.style.background = hex;
+    highlightMenu.appendChild(btn);
+  });
+
+  const highlightWrap = document.createElement('div');
+  highlightWrap.style.position = 'relative';
+  highlightWrap.append(highlightDropdown, highlightMenu);
+  highlightDropdown.onclick = () => {
+    highlightMenu.style.display = highlightMenu.style.display === 'none' ? 'block' : 'none';
+  };
+  toolbar.appendChild(highlightWrap);
+  
   // 🎯 Abschließend Toolbar anhängen
   container.innerHTML = '';
   container.appendChild(toolbar);
