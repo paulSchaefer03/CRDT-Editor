@@ -7,8 +7,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SPEICHERORT = path.resolve(__dirname, 'dokumente');
-if (!fs.existsSync(SPEICHERORT)) fs.mkdirSync(SPEICHERORT);
+const SPEICHERWURZEL = path.resolve(__dirname, 'dokumente');
+if (!fs.existsSync(SPEICHERWURZEL)) fs.mkdirSync(SPEICHERWURZEL);
 
 function erstelleInitialdokument(): Y.Doc {
   const doc = new Y.Doc();
@@ -27,21 +27,23 @@ const server = Server.configure({
   port: 3002,
 
   async onLoadDocument(data) {
-    const pfad = path.join(SPEICHERORT, `${data.documentName}.bin`);
+    console.log(`[LOAD] ${data.documentName} wird geladen.`);
+    const pfad = path.join(SPEICHERWURZEL, ...data.documentName.split('/')) + '.bin';
     if (fs.existsSync(pfad)) {
       const bin = fs.readFileSync(pfad);
       const doc = new Y.Doc();
       Y.applyUpdate(doc, bin);
       console.log(`[LOAD] ${data.documentName} geladen.`);
       return doc;
-    } else {
+    } else { //sollte nie Aufgerufen werden, weil dokument an anderer Stelle angelegt wird.
       console.log(`[CREATE] Neues Dokument: ${data.documentName}`);
       return erstelleInitialdokument();
     }
   },
-
+  
   async onStoreDocument(data) {
-    const pfad = path.join(SPEICHERORT, `${data.documentName}.bin`);
+    const pfad = path.join(SPEICHERWURZEL, ...data.documentName.split('/')) + '.bin';
+    fs.mkdirSync(path.dirname(pfad), { recursive: true }); // Ordner anlegen
     const update = Y.encodeStateAsUpdate(data.document);
     fs.writeFileSync(pfad, update);
     console.log(`[SAVE] ${data.documentName} gespeichert.`);

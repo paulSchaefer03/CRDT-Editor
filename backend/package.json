@@ -1,16 +1,23 @@
 {
   "name": "crdt-hocuspocus-server",
   "version": "1.0.0",
+  "type": "module",
+  "description": "A CRDT server using Hocuspocus and Yjs",
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "start": "node dist/hocuspocusServer.js",
+    "start_Hocus": "node dist/hocuspocusServer.js",
+    "start_Station": "node dist/stationBackend.js",
     "dev": "npm run build && npm run start"
   },
   "dependencies": {
     "@hocuspocus/server": "^2.15.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "yjs": "^13.6.24"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }

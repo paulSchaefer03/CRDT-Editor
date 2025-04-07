@@ -3,6 +3,7 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 
 export function createCRDTProvider(docName: string) {
   const ydoc = new Y.Doc();
+  console.log("[CRDT] Erstelle neues Y.Doc für:", docName);
   const provider = new HocuspocusProvider({
     url: "ws://localhost:3002",
     name: docName,

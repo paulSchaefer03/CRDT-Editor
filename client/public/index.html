@@ -3,24 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CRDT Editor</title>
+    <title>CRDT Editor – Stationen</title>
     <style>
       body {
-        margin: 0;
         font-family: sans-serif;
+        margin: 2rem;
+      }
+      label, select, input, button {
+        display: block;
+        margin: 0.5rem 0;
       }
       #editor {
-        max-width: 800px;
-        margin: 2rem auto;
-        padding: 1rem;
         border: 1px solid #ccc;
-        border-radius: 8px;
         min-height: 300px;
+        padding: 1rem;
+        border-radius: 6px;
       }
     </style>
   </head>
   <body>
-    <div id="editor">Editor lädt …</div>
-    <script type="module" src="/src/main.ts"></script>
+    <h1>🧠 Gemeinsamer CRDT-Editor</h1>
+
+    <label>Station wählen:
+      <select id="stationSelect"></select>
+    </label>
+
+    <label>Dokument wählen:
+      <select id="dokumentSelect"></select>
+    </label>
+
+    <label>Neues Dokument:
+      <input type="text" id="dokumentName" placeholder="z. B. 2025-04-07_früh" />
+    </label>
+    <button id="createBtn">➕ Dokument erstellen</button>
+
+    <label>Neue Station:
+      <input type="text" id="stationName" placeholder="z. B. Station_B7b" />
+    </label>
+    <button id="stationCreateBtn">➕ Station erstellen</button>
+
+    <h2>📝 Editor</h2>
+    <div id="editor">Bitte Dokument wählen …</div>
+
+    <script type="module" src="/src/stationsFrontend.ts"></script>
   </body>
 </html>
