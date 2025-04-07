@@ -3,32 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CRDT Editor – Stationen</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        margin: 2rem;
-      }
-      label, select, input, button {
-        display: block;
-        margin: 0.5rem 0;
-      }
-      #editor {
-        border: 1px solid #ccc;
-        min-height: 300px;
-        padding: 1rem;
-        border-radius: 6px;
-      }
-    </style>
+    <title>CRDT Editor</title>
   </head>
-  <body>
+  <body class="body">
     
-    <div id="startPage">
-      <h1>🧠 Gemeinsamer CRDT-Editor</h1>
-      <h2>📁 Dokumente nach Station!</h2>
+    <div id="startPage" class="p-6">
+      <h1 >📁 Dokumente nach Station</h1>
       <p>Bitte wähle eine Station und ein Dokument aus.</p>
       <p>Wenn du eine neue Station oder ein neues Dokument erstellen möchtest, gib den Namen ein und klicke auf den Button.</p>
-      <div id="stationsList"></div>
+      <div id="stationsList" class="space-y-4"></div>
 
       <label>Station wählen:
         <select id="stationSelect"></select>
@@ -51,12 +34,15 @@
 
 
     <div id="editorPage" style="display: none;">
-      <h1>🧠 CRDT-Editor</h1>
-      <h2>📁 Dokumente nach Station!</h2>
-      <p>Bitte wähle eine Station und ein Dokument aus.</p>
-      <p>Wenn du eine neue Station oder ein neues Dokument erstellen möchtest, gib den Namen ein und klicke auf den Button.</p>
-      <button id="backBtn">🔙 Zurück</button>
-      <div id="editor">Bitte Dokument wählen …</div>
+      <div>
+        <button id="backBtn" class="backBtn">
+          🔙 Zurück zur Übersicht
+        </button>
+        <span>CRDT Editor aktiv</span>
+      </div>
+      <div id="toolbar" class="toolbar">
+      </div>
+      <div id="editor" class="editor-container">Bitte Dokument wählen …</div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>
