@@ -1,0 +1,28 @@
+.editor-container {
+    flex: 1;
+    padding: 1rem;
+    background: var(--editorBackground);
+    min-height: 300px;
+    border: 1px solid var(--editorBorder);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    overflow-y: auto;
+  }
+  
+  #backBtn {
+    margin-bottom: 1rem;
+    padding: 0.4rem 0.8rem;
+    background: var(--backButtonBackground);
+    border: 1px solid var(--backButtonBorder);
+    border-radius: 4px;
+    cursor: pointer;
+  
+    &:hover {
+      background: var(--backButtonHoverBackground);
+    }
+  }
+  
+  .active-doc {
+    background-color: var(--activeDocBackground);
+    font-weight: bold;
+  }

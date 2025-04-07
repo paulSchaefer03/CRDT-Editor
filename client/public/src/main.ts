@@ -3,7 +3,7 @@ import { initStationsFrontend } from "./stationsFrontend";
 import { initialisiereNavigation } from "./navigation";
 import { setupCRDTEditor } from "./editor";
 import { zeigeEditorAnsicht, zeigeStartAnsicht } from "./navigation";
-import './style.scss';
+import './scss/main.scss';
 
 
 initialisiereNavigation();

@@ -1,0 +1,12 @@
+// Base styles
+@use 'base/variables';
+@use 'base/base';
+
+// Layout styles
+//@use 'layout/startpage';
+@use 'layout/editorpage';
+
+// Component styles
+//@use 'components/editor';
+@use 'components/table';
+@use 'components/toolbar';

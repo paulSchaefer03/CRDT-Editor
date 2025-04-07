@@ -1,0 +1,21 @@
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--toolbarBorder);
+    background: var(--toolbarBackground);
+  
+    .btn {
+      padding: 0.4rem 0.75rem;
+      border: 1px solid var(--toolbarButtonBorder);
+      background: var(--toolbarButtonBackground);
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 0.9rem;
+  
+      &:hover {
+        background: var(--toolbarButtonHoverBackground);
+      }
+    }
+  }
