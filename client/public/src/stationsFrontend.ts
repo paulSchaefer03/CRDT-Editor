@@ -1,26 +1,13 @@
 import { setupCRDTEditor } from './editor';
+import { ladeDokumente, ladeStationen } from './apiFunctions';
+
+
+export function initStationsFrontend() {
+    console.log("[Frontend] Initialisiere Stations-Frontend...");
+    baueUI();
+}
 
 const apiBase = 'http://localhost:3001';
-
-async function ladeStationen(): Promise<string[]> {
-  const res = await fetch(`${apiBase}/stationen`, {
-    headers: {
-      'Accept': 'application/json'
-    },
-    mode: 'cors'
-  });
-  return res.json();
-}
-
-async function ladeDokumente(station: string): Promise<string[]> {
-  const res = await fetch(`${apiBase}/dokumente/${station}`, {
-    headers: {
-      'Accept': 'application/json'
-    },
-    mode: 'cors'
-  });
-  return res.json();
-}
 
 async function neuesDokument(station: string, name: string): Promise<void> {
   await fetch(`${apiBase}/dokumente/${station}/${name}`, {

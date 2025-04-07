@@ -22,29 +22,43 @@
     </style>
   </head>
   <body>
-    <h1>🧠 Gemeinsamer CRDT-Editor</h1>
+    
+    <div id="startPage">
+      <h1>🧠 Gemeinsamer CRDT-Editor</h1>
+      <h2>📁 Dokumente nach Station!</h2>
+      <p>Bitte wähle eine Station und ein Dokument aus.</p>
+      <p>Wenn du eine neue Station oder ein neues Dokument erstellen möchtest, gib den Namen ein und klicke auf den Button.</p>
+      <div id="stationsList"></div>
 
-    <label>Station wählen:
-      <select id="stationSelect"></select>
-    </label>
+      <label>Station wählen:
+        <select id="stationSelect"></select>
+      </label>
+  
+      <label>Dokument wählen:
+        <select id="dokumentSelect"></select>
+      </label>
+  
+      <label>Neues Dokument:
+        <input type="text" id="dokumentName" placeholder="z. B. 2025-04-07_früh" />
+      </label>
+      <button id="createBtn">➕ Dokument erstellen</button>
+  
+      <label>Neue Station:
+        <input type="text" id="stationName" placeholder="z. B. Station_B7b" />
+      </label>
+      <button id="stationCreateBtn">➕ Station erstellen</button>
+    </div>
 
-    <label>Dokument wählen:
-      <select id="dokumentSelect"></select>
-    </label>
 
-    <label>Neues Dokument:
-      <input type="text" id="dokumentName" placeholder="z. B. 2025-04-07_früh" />
-    </label>
-    <button id="createBtn">➕ Dokument erstellen</button>
+    <div id="editorPage" style="display: none;">
+      <h1>🧠 CRDT-Editor</h1>
+      <h2>📁 Dokumente nach Station!</h2>
+      <p>Bitte wähle eine Station und ein Dokument aus.</p>
+      <p>Wenn du eine neue Station oder ein neues Dokument erstellen möchtest, gib den Namen ein und klicke auf den Button.</p>
+      <button id="backBtn">🔙 Zurück</button>
+      <div id="editor">Bitte Dokument wählen …</div>
+    </div>
 
-    <label>Neue Station:
-      <input type="text" id="stationName" placeholder="z. B. Station_B7b" />
-    </label>
-    <button id="stationCreateBtn">➕ Station erstellen</button>
-
-    <h2>📝 Editor</h2>
-    <div id="editor">Bitte Dokument wählen …</div>
-
-    <script type="module" src="/src/stationsFrontend.ts"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

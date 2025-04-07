@@ -4,6 +4,7 @@ import { schema } from "prosemirror-schema-basic";
 import { ySyncPlugin, yCursorPlugin, yUndoPlugin } from "y-prosemirror";
 import { Awareness } from "y-protocols/awareness";
 import { createCRDTProvider } from "./crdt";
+import { entferneLadeIndikator } from "./navigation";
 
 export function setupCRDTEditor(container: HTMLElement, docName: string) {
   console.log("[Init] Editor starten für:", docName);
@@ -19,6 +20,11 @@ export function setupCRDTEditor(container: HTMLElement, docName: string) {
     ],
   });
 
+  provider.on("synced", () => {
+    console.log("[Hocuspocus] Synchronisiert:", provider.synced, " Dokument:", docName, " Entferne Ladeindikator");
+    entferneLadeIndikator();
+  });
+  
   const view = new EditorView(container, {
     state,
   });
