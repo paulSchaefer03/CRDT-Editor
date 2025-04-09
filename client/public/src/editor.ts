@@ -9,10 +9,15 @@ import Highlight from '@tiptap/extension-highlight';
 import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
 import TableHeader from '@tiptap/extension-table-header';
-import TableCell from '@tiptap/extension-table-cell';
 import TextStyle from '@tiptap/extension-text-style';
 import { YjsExtension } from "./YjsExtensions";
 import { erstelleToolbar } from "./toolbar";
+import { enforceTableMaxWidth } from "./tableSizing";
+
+import CustomTableCell from "./customExtensions/CutsomTableCell";
+import FontSize from "./customExtensions/FontSize";
+import FontFamily from "./customExtensions/FontFamily";
+import LineHeight from "./customExtensions/LineHeight";
 
 export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
   const { ydoc, yXmlFragment, provider } = createCRDTProvider(dokumentName);
@@ -35,7 +40,10 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
       Table.configure({ resizable: true }),
       TableRow,
       TableHeader,
-      TableCell,
+      CustomTableCell,
+      FontSize,
+      FontFamily,
+      LineHeight,
       YjsExtension(yXmlFragment, provider.awareness),
     ],
     content: '',
@@ -56,5 +64,30 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
   (window as any).provider = provider;
   (window as any).editor = editor;
   erstelleToolbar(document.getElementById('toolbar')!, editor);
+  monitorColumnResize(editor);
+  
   return editor;
 }
+
+function monitorColumnResize(editor: Editor) {
+  let resizing = false;
+
+  document.addEventListener('mousedown', (e) => {
+    const target = document.elementFromPoint(e.clientX, e.clientY);
+    if (target && (target.classList.contains('column-resize-dragging') || 
+      target.tagName === 'TH' || 
+      target.tagName === 'TD' || 
+      target.tagName === 'TABLE')) {
+      resizing = true;
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (resizing) {
+      resizing = false;
+      // Timeout um DOM-Änderung abzuwarten
+      setTimeout(() => enforceTableMaxWidth(editor), 10);
+    }
+  });
+}
+

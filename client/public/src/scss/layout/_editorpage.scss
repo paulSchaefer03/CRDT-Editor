@@ -1,13 +1,9 @@
-.editor-container {
+#editor-container {
     flex: 1;
-    padding: 1rem;
-    background: var(--editorBackground);
-    border: 1px solid var(--editorBorder);
-    border-top: none;
-    border-radius: 0 0 8px 8px;
-    overflow-y: auto;
+    padding: 20px;
+    overflow: auto;
+    height: 100vh;
   }
-  
   #backBtn {
     margin-bottom: 1rem;
     padding: 0.4rem 0.8rem;
@@ -19,6 +15,16 @@
     &:hover {
       background: var(--backButtonHoverBackground);
     }
+  }
+
+  .document-a4 {
+    background: var(--editorBackground);
+    box-shadow: 0 0 8px var(--editorDocumentBorderShadow);
+    margin: 0 auto;
+    width: 794px; // DIN A4 width
+    height: 1123px; // DIN A4 height
+    padding: 20mm; // Standardseitenrand
+    overflow-y: auto;
   }
   
   .active-doc {

@@ -42,7 +42,16 @@
       </div>
       <div id="toolbar" class="toolbar">
       </div>
-      <div id="editor" class="editor-container">Bitte Dokument wählen …</div>
+      <div id="layoutControls">
+        <label>Breite: <input type="range" id="widthSlider" min="400" max="1200" value="794"></label>
+        <label>Höhe: <input type="range" id="heightSlider" min="500" max="1600" value="1123"></label>
+        <button id="orientationToggle">Querformat</button>
+      </div>
+      <div id="editor-container">
+        <div id="document" class="document-a4">
+          <div id="editor" class="editor"></div>
+        </div>
+      </div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

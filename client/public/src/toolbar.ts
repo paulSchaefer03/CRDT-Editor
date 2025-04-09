@@ -34,6 +34,10 @@ const textLayouts: { name: string; align: 'left' | 'right' | 'center' }[] = [
   { name: 'Zentriert', align: 'center' },
 ];
 
+const schriftGroessen = ['10', '12', '14', '16', '18', '20', '24', '28', '32', '36', '48', '60', '72', '96'];
+
+const schriftArten = ['Arial', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana'];
+
 export function erstelleToolbar(container: HTMLElement, editor: Editor) {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
@@ -51,6 +55,55 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor) {
     button('Italic', () => editor?.chain().focus().toggleItalic().run()),
     button('Underline', () => editor?.chain().focus().toggleUnderline().run())
   );
+
+  // 🎨 Schriftart-Auswahl
+  const fontSelect = document.createElement('select');
+  schriftArten.forEach((font) => {
+    const option = document.createElement('option');
+    option.value = font;
+    option.textContent = font;
+    fontSelect.appendChild(option);
+  });
+
+  fontSelect.onchange = () => {
+    editor.chain().focus().setFontFamily(fontSelect.value).run();
+  };
+
+  const zeilenAbstaende = [
+    { name: 'Einfach', value: '1' },
+    { name: '1.5', value: '1.5' },
+    { name: 'Doppelt', value: '2' },
+    { name: 'Benutzerdefiniert', value: 'custom' },
+  ];
+
+  toolbar.appendChild(fontSelect);
+
+  // 🔤 Schriftgrößen-Auswahl
+  const sizeWrap = document.createElement('div');
+  sizeWrap.style.display = 'inline-flex';
+  sizeWrap.style.alignItems = 'center';
+  sizeWrap.style.gap = '4px';
+
+  const sizeInput = document.createElement('input');
+  sizeInput.type = 'number';
+  sizeInput.value = '14';
+  sizeInput.style.width = '50px';
+
+  const updateSize = (delta = 0) => {
+    const newSize = parseInt(sizeInput.value) + delta;
+    sizeInput.value = newSize.toString();
+    editor.chain().focus().setFontSize(`${newSize}px`).run();
+  };
+
+  sizeWrap.append(
+    button('-', () => updateSize(-1)),
+    sizeInput,
+    button('+', () => updateSize(1))
+  );
+
+  sizeInput.onchange = () => updateSize();
+
+  toolbar.appendChild(sizeWrap);
 
   // 🎨 Farb-Dropdown
   const farbDropdown = document.createElement('div');
@@ -170,6 +223,57 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor) {
     highlightMenu.style.display = highlightMenu.style.display === 'none' ? 'block' : 'none';
   };
   toolbar.appendChild(highlightWrap);
+
+    // 🖌️ Tabellenzellen-Hintergrundfarbe-Dropdown
+    const cellBgDropdown = document.createElement('div');
+    cellBgDropdown.className = 'btn';
+    cellBgDropdown.textContent = 'Zellenfarbe ▼';
+  
+    const cellBgMenu = document.createElement('div');
+    cellBgMenu.style.display = 'none';
+    cellBgMenu.style.position = 'absolute';
+    cellBgMenu.style.background = '#fff';
+    cellBgMenu.style.border = '1px solid #ccc';
+    cellBgMenu.style.padding = '0.5rem';
+    cellBgMenu.style.zIndex = '10';
+  
+    farben.forEach(({ name, hex }) => {
+      const btn = button(name, () => {
+        editor.chain().focus().updateAttributes('tableCell', { backgroundColor: hex }).run();
+        cellBgMenu.style.display = 'none';
+      });
+      btn.style.background = hex;
+      cellBgMenu.appendChild(btn);
+    });
+  
+    const cellBgWrap = document.createElement('div');
+    cellBgWrap.style.position = 'relative';
+    cellBgWrap.append(cellBgDropdown, cellBgMenu);
+    cellBgDropdown.onclick = () => {
+      cellBgMenu.style.display = cellBgMenu.style.display === 'none' ? 'block' : 'none';
+    };
+    toolbar.appendChild(cellBgWrap);
+
+    // 📏 Zeilenabstand-Auswahl
+    const spacingSelect = document.createElement('select');
+    zeilenAbstaende.forEach((option) => {
+      const opt = document.createElement('option');
+      opt.value = option.value;
+      opt.textContent = option.name;
+      spacingSelect.appendChild(opt);
+    });
+  
+    spacingSelect.onchange = () => {
+      const value = spacingSelect.value;
+      if (value === 'custom') {
+        const customValue = prompt('Bitte Zeilenabstand eingeben:', '1');
+        if (customValue) editor.chain().focus().setLineHeight(customValue).run();
+      } else {
+        editor.chain().focus().setLineHeight(value).run();
+      }
+    };
+  
+    toolbar.appendChild(spacingSelect);
   
   // 🎯 Abschließend Toolbar anhängen
   container.innerHTML = '';

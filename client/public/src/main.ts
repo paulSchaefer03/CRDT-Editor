@@ -4,7 +4,7 @@ import { initialisiereNavigation } from "./navigation";
 import { setupCRDTEditor } from "./editor";
 import { zeigeEditorAnsicht, zeigeStartAnsicht } from "./navigation";
 import './scss/main.scss';
-
+import './layoutControls';
 
 initialisiereNavigation();
 
