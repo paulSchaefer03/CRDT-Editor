@@ -1,0 +1,53 @@
+.ruler-handle {
+  position: absolute;
+  background: #007acc;
+  z-index: 10;
+}
+.ruler-handle.left, .ruler-handle.right {
+  top: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+}
+.ruler-handle.left  { left: 20mm; }
+.ruler-handle.right { right: 20mm; }
+.ruler-handle.top, .ruler-handle.bottom {
+  left: 0;
+  width: 100%;
+  height: 6px;
+  cursor: row-resize;
+}
+.ruler-handle.top    { top: 25mm; }
+.ruler-handle.bottom { bottom: 20mm; }
+
+.ruler-label {
+  position: absolute;
+  font-size: 10px;
+  color: #333;
+  background: #eaeaea;
+  padding: 1px 3px;
+  border-radius: 2px;
+  top: -18px;
+  left: 8px;
+  white-space: nowrap;
+}
+
+.ruler-line {
+  position: absolute;
+  background: repeating-linear-gradient(90deg, #007acc 0 1px, transparent 1px 4px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+#lineLeft, #lineRight {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+#lineTop, #lineBottom {
+  left: 0;
+  right: 0;
+  height: 1px;
+}

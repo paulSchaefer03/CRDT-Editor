@@ -1,4 +1,6 @@
 import { Editor } from '@tiptap/core';
+import html2pdf from 'html2pdf.js';
+import { applyInlineStylesToTable } from './exportStyleSheet';
 
 const farben: { name: string; hex: string }[] = [
   { name: 'Rot', hex: '#ef4444' },
@@ -37,6 +39,15 @@ const textLayouts: { name: string; align: 'left' | 'right' | 'center' }[] = [
 const schriftGroessen = ['10', '12', '14', '16', '18', '20', '24', '28', '32', '36', '48', '60', '72', '96'];
 
 const schriftArten = ['Arial', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana'];
+
+function applyMargins(top: number, right: number, bottom: number, left: number) {
+  const doc = document.getElementById('document');
+  if (!doc) return;
+  doc.style.paddingTop = `${top}mm`;
+  doc.style.paddingRight = `${right}mm`;
+  doc.style.paddingBottom = `${bottom}mm`;
+  doc.style.paddingLeft = `${left}mm`;
+}
 
 export function erstelleToolbar(container: HTMLElement, editor: Editor) {
   const toolbar = document.createElement('div');
@@ -273,7 +284,87 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor) {
       }
     };
   
-    toolbar.appendChild(spacingSelect);
+  toolbar.appendChild(spacingSelect);
+
+  // 📐 Seitenrand-Presets
+  const randDropdown = document.createElement('select');
+  randDropdown.className = 'btn';
+
+  const presets = [
+    { name: 'Standard', top: 25, right: 20, bottom: 20, left: 20 },
+    { name: 'Schmal', top: 12.7, right: 12.7, bottom: 12.7, left: 12.7 },
+    { name: 'Breit', top: 50, right: 50, bottom: 50, left: 50 },
+    { name: 'Druckfreundlich', top: 20, right: 15, bottom: 15, left: 15 },
+  ];
+
+  presets.forEach((preset) => {
+    const option = document.createElement('option');
+    option.value = preset.name;
+    option.textContent = preset.name;
+    randDropdown.appendChild(option);
+  });
+
+  randDropdown.onchange = () => {
+    const selected = presets.find(p => p.name === randDropdown.value);
+    if (selected) {
+      applyMargins(selected.top, selected.right, selected.bottom, selected.left);
+    }
+  };
+
+  toolbar.appendChild(randDropdown);
+
+  // 🔄 Seitenorientierung umschalten
+  const orientationToggle = button('Querformat', () => {
+    const documentEl = document.getElementById('document');
+    if (!documentEl) return;
+
+    let isLandscape = documentEl.style.width === '1123px';
+    isLandscape = !isLandscape;
+
+    if (isLandscape) {
+      documentEl.style.width = '1123px';
+      documentEl.style.height = '794px';
+      orientationToggle.textContent = 'Hochformat';
+    } else {
+      documentEl.style.width = '794px';
+      documentEl.style.height = '1123px';
+      orientationToggle.textContent = 'Querformat';
+    }
+  });
+
+  toolbar.appendChild(orientationToggle);
+
+
+  // 🖨️ PDF-Export & Drucken
+    toolbar.append(
+      button('📄 Export PDF', () => {
+        const element = document.getElementById('document');
+        if (!element) return;
+        
+        element.querySelectorAll('table').forEach((table) => {
+          applyInlineStylesToTable(table as HTMLElement);
+        });
+
+        const opt = {
+          margin: 0,
+          filename: 'Dokument.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: {
+            unit: 'px',
+            format: [element.offsetWidth, element.offsetHeight],
+            orientation: 'portrait' as const,
+          },
+        };
+        html2pdf().set(opt).from(element).save();
+
+      }),
+      button('🖨️ Drucken', () => {
+        window.print();
+      })
+    );
+  
+  
   
   // 🎯 Abschließend Toolbar anhängen
   container.innerHTML = '';

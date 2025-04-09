@@ -19,6 +19,7 @@
     "@tiptap/extension-text-align": "^2.11.7",
     "@tiptap/extension-underline": "^2.11.7",
     "@tiptap/starter-kit": "^2.11.7",
+    "html2pdf.js": "^0.10.3",
     "prosemirror-model": "^1.19.1",
     "prosemirror-schema-basic": "^1.2.1",
     "prosemirror-state": "^1.4.3",

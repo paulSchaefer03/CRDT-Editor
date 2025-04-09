@@ -12,7 +12,8 @@
       "isolatedModules": true,
       "lib": ["DOM", "ESNext"],
       "allowSyntheticDefaultImports": true,
-      "outDir": "dist"
+      "outDir": "dist",
+      "typeRoots": ["./node_modules/@types", "./public/src/types"]
     },
     "include": ["public/src/**/*"]
 }

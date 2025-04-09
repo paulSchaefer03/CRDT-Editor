@@ -23,7 +23,10 @@
     margin: 0 auto;
     width: 794px; // DIN A4 width
     height: 1123px; // DIN A4 height
-    padding: 20mm; // Standardseitenrand
+    padding-left: 25mm; // Standardseitenrand
+    padding-top: 25mm; // Standardseitenrand
+    padding-right: 25mm; // Standardseitenrand
+    padding-bottom: 20mm; // Standardseitenrand
     overflow-y: auto;
   }
   

@@ -43,11 +43,26 @@
       <div id="toolbar" class="toolbar">
       </div>
       <div id="layoutControls">
-        <label>Breite: <input type="range" id="widthSlider" min="400" max="1200" value="794"></label>
-        <label>Höhe: <input type="range" id="heightSlider" min="500" max="1600" value="1123"></label>
-        <button id="orientationToggle">Querformat</button>
+        <label style="display: none;">Breite: <input type="range" id="widthSlider" min="400" max="1200" value="794"></label>
+        <label style="display: none;">Höhe: <input type="range" id="heightSlider" min="500" max="1600" value="1123"></label>
+        <button style="display: none;" id="orientationToggle">Querformat</button>
       </div>
+      
       <div id="editor-container">
+        <div id="rulerTop">
+          <div class="ruler-handle left" draggable="true" title="Linker Rand"><span class="ruler-label" id="labelLeft">20mm</span></div>
+          <div class="ruler-line" id="lineLeft"></div>
+          <div class="ruler-handle right" draggable="true" title="Rechter Rand"><span class="ruler-label" id="labelRight">20mm</span></div>
+          <div class="ruler-line" id="lineRight"></div>
+        </div>
+      
+        <div id="rulerLeft">
+          <div class="ruler-handle top" draggable="true" title="Oberer Rand"><span class="ruler-label" id="labelTop">25mm</span></div>
+          <div class="ruler-line" id="lineTop"></div>
+          <div class="ruler-handle bottom" draggable="true" title="Unterer Rand"><span class="ruler-label" id="labelBottom">20mm</span></div>
+          <div class="ruler-line" id="lineBottom"></div>
+        </div>
+
         <div id="document" class="document-a4">
           <div id="editor" class="editor"></div>
         </div>
