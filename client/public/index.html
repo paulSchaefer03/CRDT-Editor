@@ -47,27 +47,23 @@
         <label style="display: none;">Höhe: <input type="range" id="heightSlider" min="500" max="1600" value="1123"></label>
         <button style="display: none;" id="orientationToggle">Querformat</button>
       </div>
-      
-      <div id="editor-container">
-        <div id="rulerTop">
-          <div class="ruler-handle left" draggable="true" title="Linker Rand"><span class="ruler-label" id="labelLeft">20mm</span></div>
-          <div class="ruler-line" id="lineLeft"></div>
-          <div class="ruler-handle right" draggable="true" title="Rechter Rand"><span class="ruler-label" id="labelRight">20mm</span></div>
-          <div class="ruler-line" id="lineRight"></div>
-        </div>
-      
-        <div id="rulerLeft">
-          <div class="ruler-handle top" draggable="true" title="Oberer Rand"><span class="ruler-label" id="labelTop">25mm</span></div>
-          <div class="ruler-line" id="lineTop"></div>
-          <div class="ruler-handle bottom" draggable="true" title="Unterer Rand"><span class="ruler-label" id="labelBottom">20mm</span></div>
-          <div class="ruler-line" id="lineBottom"></div>
-        </div>
+      <div id="ruler-hover-indicator" class="ruler-hover-indicator" style="display: none;"></div>
 
-        <div id="document" class="document-a4">
-          <div id="editor" class="editor"></div>
+      <div id="editor-container">
+        <div id="ruler-wrapper">
+          <div class="ruler-row">
+            <div id="ruler-horizontal" class="ruler ruler-horizontal"></div>
+          </div>
+          <div class="ruler-column">
+            <div id="ruler-vertical" class="ruler ruler-vertical"></div>
+            <div id="document" class="document-a4">
+              <div id="editor-padding" class="editor-padding">
+                <div id="editor" class="editor"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

@@ -1,4 +1,4 @@
-import { createCRDTProvider } from "./crdt";
+import { createCRDTProvider, getSharedPaddingMap  } from "./crdt";
 import { entferneLadeIndikator } from "./navigation";
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
@@ -13,14 +13,48 @@ import TextStyle from '@tiptap/extension-text-style';
 import { YjsExtension } from "./YjsExtensions";
 import { erstelleToolbar } from "./toolbar";
 import { enforceTableMaxWidth } from "./tableSizing";
+import { updateRulerHandle } from "./ruler";
+import * as Y from "yjs";
 
 import CustomTableCell from "./customExtensions/CutsomTableCell";
 import FontSize from "./customExtensions/FontSize";
 import FontFamily from "./customExtensions/FontFamily";
 import LineHeight from "./customExtensions/LineHeight";
 
+
+
+
+
 export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
   const { ydoc, yXmlFragment, provider } = createCRDTProvider(dokumentName);
+
+  const yPadding = getSharedPaddingMap(ydoc);
+  const paddingEl = document.getElementById("editor-padding")!;
+
+  // Padding initial setzen
+
+  const initPaddingFromSharedMap = (paddingEl: HTMLElement, yPadding: Y.Map<string>) => {
+    console.log("[CRDT] Padding:", yPadding.toJSON());
+    ["top", "right", "bottom", "left"].forEach((side) => {
+      console.log("[CRDT] Padding:", side, yPadding.get(side));
+      const val = yPadding.get(side);
+      if (val) {
+        paddingEl.style[`padding${side.charAt(0).toUpperCase() + side.slice(1)}` as any] = val;
+      }
+    });
+  };
+
+  // Padding bei Änderung synchronisieren
+  yPadding.observeDeep(() => {
+    console.log("[CRDT] Padding aktualisiert:", yPadding.toJSON());
+    ["top", "right", "bottom", "left"].forEach((side) => {
+      const value = yPadding.get(side);
+      if (value) {
+        paddingEl.style[`padding${side.charAt(0).toUpperCase() + side.slice(1)}` as any] = value;
+      }
+    });
+  });
+
   if(provider.awareness == null) {
     console.error("[CRDT] Awareness ist null. Überprüfe die Verbindung.");
     return;
@@ -57,16 +91,20 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
   provider.on("synced", () => {
     console.log("[Hocuspocus] Synchronisiert:", provider.synced, " Dokument:", dokumentName, " Entferne Ladeindikator");
     entferneLadeIndikator();
+    initPaddingFromSharedMap(paddingEl, yPadding);
+    
   });
+
+
 
   // Debug global
   (window as any).view = editor.view;
   (window as any).provider = provider;
   (window as any).editor = editor;
-  erstelleToolbar(document.getElementById('toolbar')!, editor);
+  erstelleToolbar(document.getElementById('toolbar')!, editor, ydoc);
   monitorColumnResize(editor);
   
-  return editor;
+  return { editor, ydoc };
 }
 
 function monitorColumnResize(editor: Editor) {
@@ -89,5 +127,24 @@ function monitorColumnResize(editor: Editor) {
       setTimeout(() => enforceTableMaxWidth(editor), 10);
     }
   });
+}
+
+export function setPadding(side: "Left" | "Top" | "Right" | "Bottom", px: number, ydoc: Y.Doc) {
+  console.log("[CRDT] Setze Padding:", side, px);
+  const yPadding = getSharedPaddingMap(ydoc);
+  const paddingEl = document.getElementById("editor-padding")!;
+  paddingEl.style[`padding${side}` as any] = `${px}px`;
+  yPadding.set(side.toLowerCase(), `${px}px`);
+  const documentEl = document.getElementById('document');
+  if (!documentEl) return;
+  if(side === "Left") {
+    updateRulerHandle("Horizontal-Left", px, documentEl);
+  }else if(side === "Top") {
+    updateRulerHandle("Vertical-Top", px, documentEl);
+  }else if(side === "Right") {
+    updateRulerHandle("Horizontal-Right", px, documentEl);
+  }else if(side === "Bottom") {
+    updateRulerHandle("Vertical-Bottom", px, documentEl);
+  }
 }
 

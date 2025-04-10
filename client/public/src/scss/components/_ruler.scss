@@ -1,53 +1,160 @@
-.ruler-handle {
-  position: absolute;
-  background: #007acc;
+#ruler-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ruler-row {
+  display: flex;
+  margin-bottom: 10px; // Abstand zum Dokument
+  justify-content: center;
+  width: 100%;
+}
+
+.ruler-column {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px; // Abstand zwischen vertikalem Lineal und Dokument
+}
+
+.ruler {
+  background-color: var(--bodyBackground);
+  font-size: 10px;
+  color: #333;
+  border: 1px solid #ccc;
+  user-select: none;
   z-index: 10;
 }
-.ruler-handle.left, .ruler-handle.right {
-  top: 0;
-  width: 6px;
-  height: 100%;
-  cursor: col-resize;
+
+.ruler-horizontal {
+  position: relative;
+  overflow: visible;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  height: 20px;
+  display: flex;
+  align-items: flex-end;
+  width: 794px; // gleich wie document-a4
 }
-.ruler-handle.left  { left: 20mm; }
-.ruler-handle.right { right: 20mm; }
-.ruler-handle.top, .ruler-handle.bottom {
-  left: 0;
-  width: 100%;
-  height: 6px;
-  cursor: row-resize;
+
+.ruler-vertical {
+  position: relative;
+  border-top: none;
+  border-left: none;
+  border-bottom: none;
+  overflow: visible;
+  width: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  height: 1123px; // gleich wie document-a4
 }
-.ruler-handle.top    { top: 25mm; }
-.ruler-handle.bottom { bottom: 20mm; }
+
+.ruler-tick {
+  background-color: #aaa;
+}
+
+.ruler-tick-horizontal {
+  width: 1px;
+  margin-right: 6px;
+  height: 5px;
+}
+
+.ruler-tick-vertical {
+  height: 1px;
+  margin-bottom: 6px;
+  width: 5px;
+}
+
+.ruler-tick.major {
+  background-color: #000;
+}
 
 .ruler-label {
   position: absolute;
+  font-size: 9px;
+  color: #222;
+}
+
+.ruler-label-horizontal {
+  top: 2px;
+  left: -10px;
+}
+
+.ruler-label-vertical {
+  left: 2px;
+  top: -5px;
+  transform: rotate(-90deg);
+  transform-origin: left top;
+}
+
+.ruler-hover-indicator {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.ruler-marker {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  pointer-events: none;
+  background: transparent;
+  border-left: 2px dashed red;
+  z-index: 15;
+}
+
+.ruler-marker.vertical {
+  width: 100%;
+  height: 1px;
+  border-left: none;
+  border-top: 1px dashed red;
+}
+
+.ruler-handle {
+  position: absolute;
+  background: #e53935;
+  color: white;
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  cursor: grab;
+  z-index: 16;
+  user-select: none;
+}
+
+.ruler-handle.dragging {
+  cursor: grabbing;
+}
+
+.ruler-handle.horizontal {
+  top: -20px;
+  transform: translateX(-50%);
+}
+
+.ruler-handle.vertical {
+  left: -35px;
+  transform: translateY(-50%);
+}
+
+.ruler-hover-preview {
+  position: absolute;
+  background: rgba(255, 0, 0, 0.3);
+  z-index: 20;
+  pointer-events: none;
+  display: none;
+  box-shadow: 0 0 2px 1px rgba(255, 0, 0, 0.3);
+}
+
+.ruler-major-label {
   font-size: 10px;
   color: #333;
-  background: #eaeaea;
-  padding: 1px 3px;
-  border-radius: 2px;
-  top: -18px;
-  left: 8px;
-  white-space: nowrap;
-}
-
-.ruler-line {
-  position: absolute;
-  background: repeating-linear-gradient(90deg, #007acc 0 1px, transparent 1px 4px);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 5;
-}
-
-#lineLeft, #lineRight {
-  top: 0;
-  bottom: 0;
-  width: 1px;
-}
-
-#lineTop, #lineBottom {
-  left: 0;
-  right: 0;
-  height: 1px;
+  //font-weight: bold;
 }

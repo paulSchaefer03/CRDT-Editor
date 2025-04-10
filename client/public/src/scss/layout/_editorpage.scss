@@ -16,20 +16,28 @@
       background: var(--backButtonHoverBackground);
     }
   }
-
   .document-a4 {
     background: var(--editorBackground);
-    box-shadow: 0 0 8px var(--editorDocumentBorderShadow);
+    box-shadow: 0 0 8px var(--editorDocumentBorderShadow); //Vorsicht 8 Pixel box-shadow für Ruler hard coded in ruler.ts
     margin: 0 auto;
     width: 794px; // DIN A4 width
     height: 1123px; // DIN A4 height
-    padding-left: 25mm; // Standardseitenrand
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .editor-padding {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+/*     padding-left: 25mm; // Standardseitenrand
     padding-top: 25mm; // Standardseitenrand
     padding-right: 25mm; // Standardseitenrand
-    padding-bottom: 20mm; // Standardseitenrand
+    padding-bottom: 20mm; // Standardseitenrand  */
     overflow-y: auto;
-  }
-  
+  } 
   .active-doc {
     background-color: var(--activeDocBackground);
     font-weight: bold;

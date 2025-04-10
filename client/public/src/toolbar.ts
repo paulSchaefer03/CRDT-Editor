@@ -1,6 +1,8 @@
 import { Editor } from '@tiptap/core';
 import html2pdf from 'html2pdf.js';
 import { applyInlineStylesToTable } from './exportStyleSheet';
+import { setPadding } from './editor';
+import * as Y from "yjs";
 
 const farben: { name: string; hex: string }[] = [
   { name: 'Rot', hex: '#ef4444' },
@@ -40,16 +42,24 @@ const schriftGroessen = ['10', '12', '14', '16', '18', '20', '24', '28', '32', '
 
 const schriftArten = ['Arial', 'Times New Roman', 'Courier New', 'Georgia', 'Verdana'];
 
-function applyMargins(top: number, right: number, bottom: number, left: number) {
-  const doc = document.getElementById('document');
-  if (!doc) return;
-  doc.style.paddingTop = `${top}mm`;
-  doc.style.paddingRight = `${right}mm`;
-  doc.style.paddingBottom = `${bottom}mm`;
-  doc.style.paddingLeft = `${left}mm`;
+function applyMargins(top: number, right: number, bottom: number, left: number, ydoc: Y.Doc) {
+  const paddingEl = document.getElementById('editor-padding')!;
+  if (!paddingEl) return;
+  paddingEl.style.paddingTop = `${top}mm`;
+  paddingEl.style.paddingRight = `${right}mm`;
+  paddingEl.style.paddingBottom = `${bottom}mm`;
+  paddingEl.style.paddingLeft = `${left}mm`;
+
+  const dpi = 96;
+  const mmToPx = dpi / 2.54 / 10; // 1 cm = 10 mm
+
+  setPadding('Top', top * mmToPx, ydoc);
+  setPadding('Right', right * mmToPx, ydoc);
+  setPadding('Bottom', bottom * mmToPx, ydoc);
+  setPadding('Left', left * mmToPx, ydoc);
 }
 
-export function erstelleToolbar(container: HTMLElement, editor: Editor) {
+export function erstelleToolbar(container: HTMLElement, editor: Editor, ydoc: Y.Doc) {
   const toolbar = document.createElement('div');
   toolbar.className = 'toolbar';
 
@@ -307,7 +317,7 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor) {
   randDropdown.onchange = () => {
     const selected = presets.find(p => p.name === randDropdown.value);
     if (selected) {
-      applyMargins(selected.top, selected.right, selected.bottom, selected.left);
+      applyMargins(selected.top, selected.right, selected.bottom, selected.left, ydoc);
     }
   };
 
@@ -335,7 +345,7 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor) {
   toolbar.appendChild(orientationToggle);
 
 
-  // 🖨️ PDF-Export & Drucken
+  // 🖨️ PDF-Export & Drucken (Querformat muss noch gefixt werden)
     toolbar.append(
       button('📄 Export PDF', () => {
         const element = document.getElementById('document');

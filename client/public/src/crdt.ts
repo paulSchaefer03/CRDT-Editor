@@ -18,3 +18,7 @@ export function createCRDTProvider(docName: string) {
 
   return { ydoc, yXmlFragment, provider };
 }
+
+export function getSharedPaddingMap(ydoc: Y.Doc): Y.Map<string> {
+  return ydoc.getMap("padding");
+}
