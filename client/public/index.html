@@ -40,7 +40,10 @@
         </button>
         <span>CRDT Editor aktiv</span>
       </div>
-      <div id="toolbar" class="toolbar">
+      <div id="toolbar" class="toolbar-container">
+      </div>
+      <div class="ruler-row">
+        <div id="ruler-horizontal" class="ruler ruler-horizontal"></div>
       </div>
       <div id="layoutControls">
         <label style="display: none;">Breite: <input type="range" id="widthSlider" min="400" max="1200" value="794"></label>
@@ -51,9 +54,6 @@
 
       <div id="editor-container">
         <div id="ruler-wrapper">
-          <div class="ruler-row">
-            <div id="ruler-horizontal" class="ruler ruler-horizontal"></div>
-          </div>
           <div class="ruler-column">
             <div id="ruler-vertical" class="ruler ruler-vertical"></div>
             <div id="document" class="document-a4">
@@ -63,8 +63,8 @@
             </div>
           </div>
         </div>
+        <div id="distance-bottom"></div>
       </div>
-
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

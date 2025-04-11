@@ -1,8 +1,11 @@
 #editor-container {
     flex: 1;
-    padding: 20px;
+    padding: 10px;
     overflow: auto;
     height: 100vh;
+  }
+  #distance-bottom{
+    height: 25%;
   }
   #backBtn {
     margin-bottom: 1rem;

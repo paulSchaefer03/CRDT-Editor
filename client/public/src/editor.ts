@@ -1,5 +1,5 @@
 import { createCRDTProvider, getSharedPaddingMap  } from "./crdt";
-import { entferneLadeIndikator } from "./navigation";
+import { entferneLadeIndikator, zeigeEditorAnsicht } from "./navigation";
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -14,6 +14,7 @@ import { YjsExtension } from "./YjsExtensions";
 import { erstelleToolbar } from "./toolbar";
 import { enforceTableMaxWidth } from "./tableSizing";
 import { updateRulerHandle } from "./ruler";
+import setupRulers from './ruler';
 import * as Y from "yjs";
 
 import CustomTableCell from "./customExtensions/CutsomTableCell";
@@ -34,19 +35,19 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
   // Padding initial setzen
 
   const initPaddingFromSharedMap = (paddingEl: HTMLElement, yPadding: Y.Map<string>) => {
-    console.log("[CRDT] Padding:", yPadding.toJSON());
+    const paddingValues: Record<string, string> = {};
     ["top", "right", "bottom", "left"].forEach((side) => {
-      console.log("[CRDT] Padding:", side, yPadding.get(side));
       const val = yPadding.get(side);
       if (val) {
-        paddingEl.style[`padding${side.charAt(0).toUpperCase() + side.slice(1)}` as any] = val;
+      paddingEl.style[`padding${side.charAt(0).toUpperCase() + side.slice(1)}` as any] = val;
+      paddingValues[side] = val;
       }
     });
+    return paddingValues;
   };
 
   // Padding bei Änderung synchronisieren
   yPadding.observeDeep(() => {
-    console.log("[CRDT] Padding aktualisiert:", yPadding.toJSON());
     ["top", "right", "bottom", "left"].forEach((side) => {
       const value = yPadding.get(side);
       if (value) {
@@ -91,7 +92,11 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
   provider.on("synced", () => {
     console.log("[Hocuspocus] Synchronisiert:", provider.synced, " Dokument:", dokumentName, " Entferne Ladeindikator");
     entferneLadeIndikator();
-    initPaddingFromSharedMap(paddingEl, yPadding);
+    const paddingValues = initPaddingFromSharedMap(paddingEl, yPadding);
+    zeigeEditorAnsicht();
+    if (paddingEl && editor) {
+      setupRulers(paddingEl, ydoc, paddingValues);
+    }
     
   });
 
@@ -130,7 +135,6 @@ function monitorColumnResize(editor: Editor) {
 }
 
 export function setPadding(side: "Left" | "Top" | "Right" | "Bottom", px: number, ydoc: Y.Doc) {
-  console.log("[CRDT] Setze Padding:", side, px);
   const yPadding = getSharedPaddingMap(ydoc);
   const paddingEl = document.getElementById("editor-padding")!;
   paddingEl.style[`padding${side}` as any] = `${px}px`;

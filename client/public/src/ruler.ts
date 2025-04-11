@@ -3,7 +3,7 @@ import * as Y from "yjs";
 const dpi = 96;
 const cmToPx = dpi / 2.54;
 
-function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
+function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key: string]: string }) {
     const paddingEl = document.getElementById('editor-padding')!;
     const hRuler = document.getElementById('ruler-horizontal')!;
     const vRuler = document.getElementById('ruler-vertical')!;
@@ -58,12 +58,12 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
         const label = document.createElement('div');
         label.className = 'ruler-major-label';
         label.style.position = 'absolute';
-        label.style.fontSize = '10px';
+        label.style.fontSize = '11px';
         label.innerText = `${Math.floor(cm)}cm`;
   
         if (orientation === 'horizontal') {
           label.style.bottom = '45%';
-          label.style.left = `${px - 10}px`;
+          label.style.left = `${px - 11}px`;
           hRuler.appendChild(label);
         } else {
           label.style.right = '45%';
@@ -114,10 +114,10 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
     hRuler.querySelectorAll('.ruler-marker, .ruler-handle').forEach(el => el.remove());
     vRuler.querySelectorAll('.ruler-marker, .ruler-handle').forEach(el => el.remove());
   
-    createAdjustableMarker(hRuler, 'horizontal', 'Left', paddingEl, widthPx, hoverPreview, yDoc);
-    createAdjustableMarker(hRuler, 'horizontal', 'Right', paddingEl, widthPx, hoverPreview, yDoc);
-    createAdjustableMarker(vRuler, 'vertical', 'Top', paddingEl, heightPx, hoverPreview, yDoc);
-    createAdjustableMarker(vRuler, 'vertical', 'Bottom', paddingEl, heightPx, hoverPreview, yDoc);
+    createAdjustableMarker(hRuler, 'horizontal', 'Left', paddingEl, widthPx, hoverPreview, yDoc, paddingValues['left']);
+    createAdjustableMarker(hRuler, 'horizontal', 'Right', paddingEl, widthPx, hoverPreview, yDoc, paddingValues['right']);
+    createAdjustableMarker(vRuler, 'vertical', 'Top', paddingEl, heightPx, hoverPreview, yDoc, paddingValues['top']);
+    createAdjustableMarker(vRuler, 'vertical', 'Bottom', paddingEl, heightPx, hoverPreview, yDoc, paddingValues['bottom']);
   }
   
   function createAdjustableMarker(
@@ -127,7 +127,8 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
     paddingEl: HTMLElement,
     totalSize: number,
     hoverPreview: HTMLElement,
-    yDoc: Y.Doc
+    yDoc: Y.Doc,
+    initialValue: string
   ) {
     const dpi = 96;
     const cmToPx = dpi / 2.54;
@@ -142,10 +143,25 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
     parentRuler.appendChild(marker);
     parentRuler.appendChild(handle);
   //Das ist nix so wird immer die Handler auf 2.5cm gesetzt
-    let position = isReverse ? totalSize - cmToPx * 2.5 : cmToPx * 2.5;
-  
+    let position = 0;
+    if (typeof initialValue === 'string' && initialValue.endsWith('px')) {
+      initialValue = initialValue.slice(0, -2);
+      position = parseFloat(initialValue);
+    }
+    
+    if(orientation === 'horizontal' && side === 'Left') {
+      position = parseFloat(initialValue);
+    }else if(orientation === 'horizontal' && side === 'Right') {
+      position = totalSize - parseFloat(initialValue);
+    }else if(orientation === 'vertical' && side === 'Top') {
+      position = parseFloat(initialValue);
+    }else if(orientation === 'vertical' && side === 'Bottom') {
+      position = totalSize - parseFloat(initialValue);
+    }
+
     const update = () => {
-      const pos = isReverse ? totalSize - position : position;
+      //const pos = isReverse ? totalSize - position : position;
+      let pos = position;
       if (orientation === 'horizontal') {
         marker.style.left = `${position}px`;
         handle.style.left = `${position}px`;
@@ -155,6 +171,7 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
       }
       const cm = (pos / cmToPx).toFixed(2);
       handle.innerText = `${cm}cm`;
+      pos = isReverse ? totalSize - position : position;
       paddingEl.style[`padding${side}` as any] = `${pos}px`;
   
       // Live update hover line while dragging
@@ -188,7 +205,8 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
       hoverPreview.style.display = 'none';
-      setPadding(side, position, yDoc)
+      let pos = isReverse ? totalSize - position : position;
+      setPadding(side, pos, yDoc)
     };
   
     let dragging = false;
@@ -208,13 +226,13 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
           const x = e.clientX;
           hoverPreview.style.left = `${x}px`;
           hoverPreview.style.top = `${parentRuler.getBoundingClientRect().bottom}px`;
-          hoverPreview.style.height = `${paddingEl.offsetHeight}px`;
+          hoverPreview.style.height = `${paddingEl.offsetHeight + 10}px`; //+ .ruler-row gap pixel
           hoverPreview.style.width = '1px';
         } else {
           const y = e.clientY;
           hoverPreview.style.left = `${parentRuler.getBoundingClientRect().right}px`;
           hoverPreview.style.top = `${y}px`;
-          hoverPreview.style.width = `${paddingEl.offsetWidth}px`;
+          hoverPreview.style.width = `${paddingEl.offsetWidth + 10}px`; //+ .ruler-column gap pixel
           hoverPreview.style.height = '1px';
         }
       }
@@ -230,7 +248,6 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc) {
   export default setupRulers;
 
  export function updateRulerHandle(side: "Horizontal-Left" | "Vertical-Top" | "Horizontal-Right" | "Vertical-Bottom", px: number, documentEl: HTMLElement) {
-
     const isReverse = side === 'Horizontal-Right' || side === 'Vertical-Bottom';
     const docRect = documentEl.getBoundingClientRect();
     const widthPx = docRect.width;

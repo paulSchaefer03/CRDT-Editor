@@ -5,8 +5,10 @@
 }
 
 .ruler-row {
+  position: sticky;
+  top: 0;
   display: flex;
-  margin-bottom: 10px; // Abstand zum Dokument
+  margin-top: 30px; // Abstand zur Toolbar
   justify-content: center;
   width: 100%;
 }
@@ -21,8 +23,8 @@
 .ruler {
   background-color: var(--bodyBackground);
   font-size: 10px;
-  color: #333;
-  border: 1px solid #ccc;
+  color: var(--rulerFontColor);
+  border: 1px solid var(--rulerBorder);
   user-select: none;
   z-index: 10;
 }
@@ -53,7 +55,7 @@
 }
 
 .ruler-tick {
-  background-color: #aaa;
+  background-color: var(--rulerTick);
 }
 
 .ruler-tick-horizontal {
@@ -69,13 +71,13 @@
 }
 
 .ruler-tick.major {
-  background-color: #000;
+  background-color: var(--rulerMajorTickBackground);
 }
 
 .ruler-label {
   position: absolute;
   font-size: 9px;
-  color: #222;
+  color: var(--rulerMajorTickFontColor);
 }
 
 .ruler-label-horizontal {
@@ -92,8 +94,8 @@
 
 .ruler-hover-indicator {
   position: absolute;
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
+  background: var(--rulerHoverIndicatorBackground);
+  color: var(--rulerHoverIndicatorFont);
   font-size: 10px;
   padding: 2px 4px;
   border-radius: 3px;
@@ -104,25 +106,26 @@
 .ruler-marker {
   position: absolute;
   width: 1px;
-  height: 100%;
+  height: 150%;
   pointer-events: none;
   background: transparent;
-  border-left: 2px dashed red;
+  border-left: 2px solid var(--rulerMarker);
   z-index: 15;
 }
 
 .ruler-marker.vertical {
-  width: 100%;
+  width: 150%;
   height: 1px;
   border-left: none;
-  border-top: 1px dashed red;
+  border-top: 2px solid var(--rulerMarker);
 }
 
 .ruler-handle {
   position: absolute;
-  background: #e53935;
-  color: white;
-  font-size: 10px;
+  background: var(--rulerHandleBackground);
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  color: var(--rulerHandleFont);
+  font-size: 11.5px;
   padding: 1px 4px;
   border-radius: 3px;
   cursor: grab;
@@ -140,21 +143,23 @@
 }
 
 .ruler-handle.vertical {
-  left: -35px;
+  left: -50px;
   transform: translateY(-50%);
 }
 
 .ruler-hover-preview {
   position: absolute;
-  background: rgba(255, 0, 0, 0.3);
+  background: var(--rulerHoverPreviewBackground);
   z-index: 20;
   pointer-events: none;
   display: none;
-  box-shadow: 0 0 2px 1px rgba(255, 0, 0, 0.3);
+  box-shadow: 0 0 2px 1px var(--rulerHoverPreviewBackgroundShadow);
 }
 
 .ruler-major-label {
   font-size: 10px;
-  color: #333;
-  //font-weight: bold;
+  color: var(--rulerMajorTickFontColor);
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+/*   font-weight: normal;*/
+  font-weight: normal;
 }

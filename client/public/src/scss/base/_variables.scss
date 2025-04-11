@@ -12,11 +12,28 @@
     --cokumResizeHandle: #7c3aed;
 
 //Toolbar Colors
-    --toolbarBackground: #ffffff;
+    --toolbarBackground: #f0f0f0;
     --toolbarBorder: #d1d5db;
     --toolbarButtonBackground: #f1f5f9;
     --toolbarButtonBorder: #d1d5db;
     --toolbarButtonHoverBackground: #e2e8f0;
+
+//Ruler Colors
+    --rulerFontColor: #333;
+    --rulerBorder: #ccc;
+    --rulerTick: #aaa;
+    --rulerMarker: rgb(250,0,0);
+    --rulerHandleBackground: rgb(250,0,0);
+    --rulerHandleFont: #fff;
+    --rulerMajorTickFontColor: #1a202c;
+    --rulerHoverPreviewBackground: rgba(250, 0, 0, 0.8);
+    --rulerHoverPreviewBackgroundShadow: rgba(255, 0, 0, 0.3);
+
+
+//Not so important Ruler Colors
+    --rulerHoverIndicatorFont: #fff;
+    --rulerMajorTickBackground: #000;
+    --rulerHoverIndicatorBackground: rgba(0, 0, 0, 0.75);
 
 
 //--Editor and Editor Button Colors

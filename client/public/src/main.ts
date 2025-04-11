@@ -3,10 +3,10 @@ import { initialisiereStartseite } from "./startPage";
 import { initStationsFrontend } from "./stationsFrontend";
 import { initialisiereNavigation } from "./navigation";
 import { setupCRDTEditor } from "./editor";
-import { zeigeEditorAnsicht, zeigeStartAnsicht } from "./navigation";
+import { zeigeStartAnsicht } from "./navigation";
 import './scss/main.scss';
 import './layoutControls';
-import setupRulers from './ruler';
+
 
 initialisiereNavigation();
 
@@ -22,12 +22,7 @@ function routeBasierendAufURL() {
       const dokumentName = `${station}/${dokument}`;
       const editorContainer = document.getElementById('editor')!;
       editorContainer.innerHTML = '';
-      const editor  = setupCRDTEditor(editorContainer, dokumentName);
-      zeigeEditorAnsicht();
-      const paddingEl = document.getElementById('editor-padding')!;
-      if (paddingEl && editor) {
-        //setupRulers(paddingEl, editor.ydoc);
-      }
+      setupCRDTEditor(editorContainer, dokumentName);
     }
   } else {
     zeigeStartAnsicht();
