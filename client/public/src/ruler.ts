@@ -192,9 +192,13 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key
     const onMouseMove = (e: MouseEvent) => {
       if (!dragging) return;
       const rect = parentRuler.getBoundingClientRect();
-      const coord = orientation === 'horizontal'
-        ? e.clientX - rect.left
-        : e.clientY - rect.top;
+      let coord = orientation === 'horizontal'
+      ? e.clientX - rect.left
+      : e.clientY - rect.top;
+    
+      const pxPerStep = cmToPx * 0.25; //Snap Grid 0.25cm
+      coord = Math.round(coord / pxPerStep) * pxPerStep;
+      
       position = Math.max(0, Math.min(totalSize, coord));
       update();
     };
@@ -213,6 +217,9 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key
   
     handle.addEventListener('mousedown', (e) => {
       dragging = true;
+      handle.style.transition = 'left 0.1s ease-out, top 0.1s ease-out';
+      marker.style.transition = 'left 0.1s ease-out, top 0.1s ease-out';
+      hoverPreview.style.transition = 'all 0.1s ease-out';
       handle.classList.add('dragging');
       window.addEventListener('mousemove', onMouseMove);
       window.addEventListener('mouseup', onMouseUp);
@@ -239,7 +246,12 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key
     });
   
     handle.addEventListener('mouseleave', () => {
-      if (!dragging) hoverPreview.style.display = 'none';
+      if (!dragging){
+        handle.style.transition = '';
+        marker.style.transition = '';
+        hoverPreview.style.transition = '';
+        hoverPreview.style.display = 'none';
+      } 
     });
   
     update();

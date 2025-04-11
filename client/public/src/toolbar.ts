@@ -359,7 +359,7 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor, ydoc: Y.
           margin: 0,
           filename: 'Dokument.pdf',
           image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
+          html2canvas: { scale: 3, useCORS: true },
           jsPDF: {
             unit: 'px',
             format: [element.offsetWidth, element.offsetHeight],

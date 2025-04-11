@@ -1,0 +1,23 @@
+body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    background-color: white !important;
+  }
+  
+  td, th {
+    border: 1px solid black !important;
+    padding: 4px !important;
+    background-color: inherit !important;
+    color: inherit !important;
+  }
+
+  mark {
+    color: inherit !important;
+  }
+  
+  
