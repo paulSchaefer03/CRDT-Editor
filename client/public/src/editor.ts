@@ -14,6 +14,7 @@ import { YjsExtension } from "./YjsExtensions";
 import { erstelleToolbar } from "./toolbar";
 import { enforceTableMaxWidth } from "./tableSizing";
 import { updateRulerHandle } from "./ruler";
+import { updateActiveState } from "./toolbar";
 import setupRulers from './ruler';
 import * as Y from "yjs";
 
@@ -66,7 +67,7 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
       StarterKit.configure({ history: false }),
       Underline,
       TextAlign.configure({ types: ['heading', 'paragraph'],
-        alignments: ['left', 'right', 'center'], 
+        alignments: ['left', 'right', 'center', 'justify'], 
         defaultAlignment: 'left',
       }),
       Color,
@@ -100,6 +101,8 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
     
   });
 
+  editor.on('transaction', updateActiveState);
+  editor.on('selectionUpdate', updateActiveState);
 
 
   // Debug global
