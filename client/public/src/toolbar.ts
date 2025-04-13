@@ -195,12 +195,12 @@ function createIconDropdown(
   wrapper.title = tooltip;
 
   const toggle = document.createElement('button');
-  toggle.className = 'btn icon-no-Color';
+  toggle.className = 'btn icon-table';
 
   const img = document.createElement('img');
   img.src = iconPath;
   img.alt = tooltip;
-  img.className = 'icon-wrapper-no-Color';
+  img.className = 'icon-wrapper-table';
   toggle.appendChild(img);
   wrapper.appendChild(toggle);
 
@@ -255,6 +255,109 @@ function iconButton(iconPath: string, tooltip: string, handler: () => void, isAc
 
   return btn;
 }
+
+function createTableInsertButton(editor: Editor): HTMLElement {
+  const maxCols = 10;
+  const maxRows = 8;
+
+
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'dropdown-table';
+
+  const toggle = document.createElement('button');
+  toggle.className = 'btn icon-table';
+  toggle.title = 'Tabelle einfügen';
+
+  const img = document.createElement('img');
+  img.src = '/icons/other-icons/insert-table.svg';
+  img.alt = 'Tabelle';
+  img.className = 'icon-wrapper-table';
+  toggle.appendChild(img);
+  wrapper.appendChild(toggle);
+
+  const gridContainer = document.createElement('div');
+  gridContainer.className = 'table-grid-container';
+  wrapper.appendChild(gridContainer);
+  const grid = document.createElement('div');
+  grid.className = 'table-grid';
+  gridContainer.appendChild(grid);
+
+  const sizeLabel = document.createElement('div');
+  sizeLabel.className = 'table-size-label';
+  sizeLabel.textContent = '0 × 0';
+  gridContainer.appendChild(sizeLabel);
+
+
+  const inputRow = document.createElement('div');
+  inputRow.className = 'table-input-row';
+
+  const rowsInput = document.createElement('input');
+  rowsInput.className = 'input';
+  rowsInput.type = 'number';
+  rowsInput.placeholder = 'Zeilen';
+  rowsInput.min = '1';
+  rowsInput.value = maxRows.toString(); // Defaultwert für Zeilen
+
+  const colsInput = document.createElement('input');
+  colsInput.className = 'input';
+  colsInput.type = 'number';
+  colsInput.placeholder = 'Spalten';
+  colsInput.min = '1';
+  colsInput.value = maxCols.toString(); // Defaultwert für Spalten
+
+  const insertBtn = document.createElement('button');
+  insertBtn.className = 'btn-table';
+  insertBtn.textContent = 'Einfügen';
+  insertBtn.onclick = () => {
+    const rows = parseInt(rowsInput.value);
+    const cols = parseInt(colsInput.value);
+    if (rows > 0 && cols > 0) {
+      editor.chain().focus().insertTable({ rows, cols, withHeaderRow: true }).run();
+      wrapper.classList.remove('open');
+    }
+  };
+
+  inputRow.appendChild(colsInput);
+  inputRow.appendChild(rowsInput);
+  inputRow.appendChild(insertBtn);
+  gridContainer.appendChild(inputRow);
+
+  for (let r = 0; r < maxRows; r++) {
+    for (let c = 0; c < maxCols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'table-cell';
+      cell.dataset.col = (c + 1).toString();
+      cell.dataset.row = (r + 1).toString();
+      grid.appendChild(cell);
+
+      cell.addEventListener('mouseenter', () => {
+        highlightGrid(c + 1, r + 1);
+        sizeLabel.textContent = `${c + 1} × ${r + 1}`;
+        rowsInput.value = (r + 1).toString();
+        colsInput.value = (c + 1).toString();
+      });
+
+      cell.addEventListener('click', () => {
+        editor.chain().focus().insertTable({ rows: r + 1, cols: c + 1, withHeaderRow: false }).run();
+        wrapper.classList.remove('open');
+      });
+    }
+  }
+
+  function highlightGrid(cols: number, rows: number) {
+    const cells = grid.querySelectorAll('.table-cell');
+    cells.forEach(cell => {
+      const col = parseInt((cell as HTMLElement).dataset.col!);
+      const row = parseInt((cell as HTMLElement).dataset.row!);
+      cell.classList.toggle('selected', col <= cols && row <= rows);
+    });
+  }
+
+  toggle.onclick = () => wrapper.classList.toggle('open');
+  return wrapper;
+}
+
 
 function createFontSizeSelector(
   sizes: string[],
@@ -475,7 +578,9 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor, ydoc: Y.
     tabMenu.style.display = tabMenu.style.display === 'none' ? 'block' : 'none';
   };
   toolbar.appendChild(tabWrap);
-
+  
+  const tableInsert = createTableInsertButton(editor);
+  toolbar.appendChild(tableInsert);
 
   // 📐 Schriftlayout-Auswahl
   textLayouts.forEach(({ name, align }) => {
@@ -512,26 +617,7 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor, ydoc: Y.
     );
     toolbar.appendChild(spacingDropdown);
     
-/*     const spacingSelect = document.createElement('select');
-    zeilenAbstaende.forEach((option) => {
-      const opt = document.createElement('option');
-      opt.value = option.value;
-      opt.textContent = option.name;
-      spacingSelect.appendChild(opt);
-    });
-  
-    spacingSelect.onchange = () => {
-      const value = spacingSelect.value;
-      if (value === 'custom') {
-        const customValue = prompt('Bitte Zeilenabstand eingeben:', '1');
-        if (customValue) editor.chain().focus().setLineHeight(customValue).run();
-      } else {
-        editor.chain().focus().setLineHeight(value).run();
-      }
-    };
-  
-  toolbar.appendChild(spacingSelect); */
-
+    
   // 📐 Seitenrand-Presets
   const randDropdown = createIconDropdown(
     '/icons/other-icons/padding.svg', 'Ausrichten und Einrücken',
@@ -541,27 +627,10 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor, ydoc: Y.
     }))
   );
   toolbar.appendChild(randDropdown);
-/*   const randDropdown = document.createElement('select');
-  randDropdown.className = 'btn';
 
-  presets.forEach((preset) => {
-    const option = document.createElement('option');
-    option.value = preset.name;
-    option.textContent = preset.name;
-    randDropdown.appendChild(option);
-  });
-
-  randDropdown.onchange = () => {
-    const selected = presets.find(p => p.name === randDropdown.value);
-    if (selected) {
-      applyMargins(selected.top, selected.right, selected.bottom, selected.left, ydoc);
-    }
-  };
-
-  toolbar.appendChild(randDropdown); */
 
   // 🔄 Seitenorientierung umschalten
-  const orientationToggle = button('Querformat', () => {
+  const orientationDropdown = iconButton('/icons/other-icons/flip.svg', 'Seitenorientierung', () => {
     const documentEl = document.getElementById('document');
     if (!documentEl) return;
 
@@ -579,40 +648,58 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor, ydoc: Y.
     }
   });
 
-  toolbar.appendChild(orientationToggle);
+  toolbar.appendChild(orientationDropdown);
+
+  // Lineal einblenden/Ausblenden
+  const lineal = iconButton('/icons/other-icons/ruler.svg', 'Lineal Ein/Ausblenden', () => {
+    const linealVert = document.getElementById('ruler-vertical');
+    const linealHorizontal = document.getElementById('ruler-row-id');
+    if (!linealVert || !linealHorizontal) return;
+    linealVert.style.display = linealVert.style.display === 'none' ? 'flex' : 'none';
+    linealHorizontal.style.display = linealHorizontal.style.display === 'none' ? 'flex' : 'none';
+  }
+  , () => {
+    const linealVert = document.getElementById('ruler-vertical');
+    const linealHorizontal = document.getElementById('ruler-row-id');
+    if (!linealVert || !linealHorizontal) return false;
+    return linealVert.style.display === 'flex' && linealHorizontal.style.display === 'flex';
+  });
 
 
-  // 🖨️ PDF-Export & Drucken (Querformat muss noch gefixt werden)
-    toolbar.append(
-      button('📄 Export PDF', () => {
-        const element = document.getElementById('document');
-        if (!element) return;
-        
-        element.querySelectorAll('table').forEach((table) => {
-          applyInlineStylesToTable(table as HTMLElement);
-        });
+  toolbar.appendChild(lineal);
 
-        const opt = {
-          margin: 0,
-          filename: 'Dokument.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 3, useCORS: true },
-          jsPDF: {
-            unit: 'px',
-            format: [element.offsetWidth, element.offsetHeight],
-            orientation: 'portrait' as const,
-          },
-        };
-        html2pdf().set(opt).from(element).save();
 
-      }),
-      button('🖨️ Drucken', () => {
-        window.print();
-      })
-    );
-  
+ // 🖨️ PDF-Export & Drucken (Querformat muss noch gefixt werden)
+  const pdfExport = iconButton('/icons/other-icons/export.svg', 'PDF-Export', () => {
+    const element = document.getElementById('document');
+    if (!element) return;
     
-  
+    element.querySelectorAll('table').forEach((table) => {
+      applyInlineStylesToTable(table as HTMLElement);
+    });
+
+    const opt = {
+      margin: 0,
+      filename: 'Dokument.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 3, useCORS: true },
+      jsPDF: {
+        unit: 'px',
+        format: [element.offsetWidth, element.offsetHeight],
+        orientation: 'portrait' as const,
+      },
+    };
+    html2pdf().set(opt).from(element).save();
+
+  });
+  toolbar.appendChild(pdfExport);
+
+  const printBtn = iconButton('/icons/other-icons/print.svg', 'Drucken', () => {
+    window.print();
+  });
+  toolbar.appendChild(printBtn);
+
+
   // 🎯 Abschließend Toolbar anhängen
   container.innerHTML = '';
   container.appendChild(toolbar);

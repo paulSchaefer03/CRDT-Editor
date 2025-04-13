@@ -1,5 +1,5 @@
 :root {
-
+/*
 //Global Colors
     --bodyBackground: #f0f0f0;
     --h1Color: #2b6cb0;
@@ -8,8 +8,10 @@
 //Table Colors
     --tableBorder1: #6f6f6f;
     --tableBorder2: #d1d5db;
-    --tableSelectedCell: #e0e0e0;
+    --tableSelectedCell: #3295ff;
     --cokumResizeHandle: #7c3aed;
+
+    
 
 //Toolbar Colors
     --toolbarBackground: #f0f0f0;
@@ -17,6 +19,20 @@
     --toolbarButtonBackground: #f1f5f9;
     --toolbarButtonBorder: #d1d5db;
     --toolbarButtonHoverBackground: #e2e8f0;
+
+    --toolbarActiveButtonBackground: #aeaeae;
+
+    --fontSizeInputBorder: #ccc;
+    --fontSizeDropDownBorder: #ccc;
+    --fontSizeHoverBackground: #aeaeae;
+
+    --tableGridBackground: #eee;
+    --tableGridCellBackground: #fff;
+    --tableGirdCellBorder: #ccc;
+    --tableGridLableFontColor: #444;
+
+
+    --colorMenuLableFontColor: #444;
 
 //Ruler Colors
     --rulerFontColor: #333;
@@ -28,13 +44,6 @@
     --rulerMajorTickFontColor: #1a202c;
     --rulerHoverPreviewBackground: rgba(250, 0, 0, 0.8);
     --rulerHoverPreviewBackgroundShadow: rgba(255, 0, 0, 0.3);
-
-
-//Not so important Ruler Colors
-    --rulerHoverIndicatorFont: #fff;
-    --rulerMajorTickBackground: #000;
-    --rulerHoverIndicatorBackground: rgba(0, 0, 0, 0.75);
-
 
 //Editor and Editor Button Colors
     --editorBackground: #ffffff;
@@ -48,7 +57,72 @@
     --colorMenuBackground: #fff;
     --colorMenuBorder: #ccc;
 
-    
+
 //Sonstige Farben
     --activeDocBackground: #cfe8ff;
+*/
+
+  // Global Colors
+  --bodyBackground: #dbe7f2;
+  --h1Color: #005a6f;
+  --text: #202020;
+
+  // Table Colors
+  --tableBorder1: #6c6c6c;
+  --tableBorder2: #b2b2b2;
+  --tableSelectedCell: #007da9;
+  --cokumResizeHandle: #5c5cb3;
+
+  // Toolbar Colors
+  --toolbarBackground: #0055a0;
+  --toolbarBorder: #b2b2b2;
+  --toolbarButtonBackground: #ffffff;
+  --toolbarButtonBorder: #b2b2b2;
+  --toolbarButtonHoverBackground: #d8d8ff;
+
+  //--toolbarActiveButtonBackground: #0055a0;
+  --toolbarActiveButtonBackground: #d8d8ff;
+
+  --fontSizeInputBorder: #b2b2b2;
+  --fontSizeDropDownBorder: #b2b2b2;
+  --fontSizeHoverBackground: #d8d8ff;
+
+  --tableGridBackground: #dbe7f2;
+  --tableGridCellBackground: #ffffff;
+  --tableGirdCellBorder: #b2b2b2;
+  --tableGridLableFontColor: #202020;
+
+  --colorMenuLableFontColor: #202020;
+
+  // Ruler Colors
+  --rulerFontColor: #202020;
+  --rulerBorder: #b2b2b2;
+  --rulerTick: #6c6c6c;
+  --rulerMarker: #005a6f;
+  --rulerHandleBackground: #005a6f;
+  --rulerHandleFont: #ffffff;
+  --rulerMajorTickFontColor: #202020;
+  --rulerHoverPreviewBackground: rgba(0, 90, 111, 0.9);
+  --rulerHoverPreviewBackgroundShadow: rgba(0, 143, 175, 0.5);
+
+  // Editor and Editor Button Colors
+  --editorBackground: #ffffff;
+  --editorBorder: #b2b2b2;
+  --backButtonBackground: #d8d8ff;
+  --backButtonHoverBackground: #cfe8ff;
+  --backButtonBorder: #b2b2b2;
+  --editorDocumentBorderShadow: rgba(0, 0, 0, 0.15);
+
+  // Color Menu Colors
+  --colorMenuBackground: #ffffff;
+  --colorMenuBorder: #b2b2b2;
+
+  // Sonstige Farben
+  --activeDocBackground: #cfe8ff;
+
+    //Not so important Ruler Colors
+    --rulerHoverIndicatorFont: #fff;
+    --rulerMajorTickBackground: #000;
+    --rulerHoverIndicatorBackground: rgba(0, 0, 0, 0.75);
+    
 }
