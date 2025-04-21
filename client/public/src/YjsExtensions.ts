@@ -10,7 +10,20 @@ export const YjsExtension = (yXmlFragment: Y.XmlFragment, awareness: Awareness) 
     addProseMirrorPlugins() {
       return [
         ySyncPlugin(yXmlFragment),
-        yCursorPlugin(awareness),
+        yCursorPlugin(awareness, {
+          cursorBuilder: (user: any, clientID: number) => {
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'ivisible-user-cursor-wrapper';
+            const invisibleCursor = document.createElement('div');
+            invisibleCursor.id = `ivisible-user-cursor-${clientID}`;
+            invisibleCursor.className = 'ivisible-user-cursor';
+
+            wrapper.appendChild(invisibleCursor);
+            return wrapper;
+
+          }
+        }),
         yUndoPlugin(),
       ];
     },

@@ -3,7 +3,11 @@
     padding: 10px;
     overflow: auto;
     height: 100vh;
+
+    scrollbar-width: thin;
+    scrollbar-color:  var(--rulerHandleBackground) var(--bodyBackground);
   }
+
   #distance-bottom{
     height: 25%;
   }
@@ -35,7 +39,7 @@
     height: 100%;
     width: 100%;
     box-sizing: border-box;
-    overflow-y: auto;
+    //overflow-y: auto;
   } 
   .active-doc {
     background-color: var(--activeDocBackground);
@@ -47,4 +51,5 @@
     outline: none;       
     box-shadow: none;    
   }
+
   

@@ -174,6 +174,8 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key
       pos = isReverse ? totalSize - position : position;
       paddingEl.style[`padding${side}` as any] = `${pos}px`;
   
+    };
+    const updateHoverPreview = () => {
       // Live update hover line while dragging
       hoverPreview.style.display = 'block';
       if (orientation === 'horizontal') {
@@ -187,7 +189,7 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key
         hoverPreview.style.width = `${paddingEl.offsetWidth}px`;
         hoverPreview.style.height = '1px';
       }
-    };
+    }
   
     const onMouseMove = (e: MouseEvent) => {
       if (!dragging) return;
@@ -201,6 +203,7 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key
       
       position = Math.max(0, Math.min(totalSize, coord));
       update();
+      updateHoverPreview();
     };
   
     const onMouseUp = () => {
@@ -210,7 +213,7 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key
       window.removeEventListener('mouseup', onMouseUp);
       hoverPreview.style.display = 'none';
       let pos = isReverse ? totalSize - position : position;
-      setPadding(side, pos, yDoc)
+      setPadding(side, pos, yDoc, true);
     };
   
     let dragging = false;
@@ -317,6 +320,27 @@ function setupRulers(documentEl: HTMLElement, yDoc: Y.Doc, paddingValues: { [key
 
     }
 
+  }
+
+  export function removeRulers() {
+    const hRuler = document.getElementById('ruler-horizontal');
+    const vRuler = document.getElementById('ruler-vertical');
+    const hoverPreview = document.querySelector('.ruler-hover-preview');
+
+    if (hRuler) {
+      hRuler.innerHTML = '';
+      hRuler.style.width = '';
+      hRuler.style.marginLeft = '';
+    }
+
+    if (vRuler) {
+      vRuler.innerHTML = '';
+       vRuler.style.height = '';
+    }
+
+    if (hoverPreview && hoverPreview.parentNode) {
+      hoverPreview.parentNode.removeChild(hoverPreview);
+    }
 
   }
   

@@ -22,3 +22,8 @@ export function createCRDTProvider(docName: string) {
 export function getSharedPaddingMap(ydoc: Y.Doc): Y.Map<string> {
   return ydoc.getMap("padding");
 }
+
+export function getSharedOrientationMap(ydoc: Y.Doc): Y.Map<string> {
+  return ydoc.getMap("layout");
+}
+

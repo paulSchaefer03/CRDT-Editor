@@ -1,9 +1,10 @@
 import { Editor } from '@tiptap/core';
 import html2pdf from 'html2pdf.js';
 import { applyInlineStylesToTable } from './exportStyleSheet';
-import { setPadding } from './editor';
+import { setPadding, setOrientation, updateOrientation } from './editor';
 import * as Y from "yjs";
 import { getAvailableFonts } from "./customExtensions/FontFamily";
+
 
 const farben: { name: string; hex: string }[] = [
   { name: 'schwarz',      hex: '#000000' },
@@ -483,7 +484,7 @@ export function createColorDropdownIndicatorTracker(
   registerColorIndicator(colorIndicator, getCurrentColor);
 }
 
-function applyMargins(top: number, right: number, bottom: number, left: number, ydoc: Y.Doc) {
+export function applyMargins(top: number, right: number, bottom: number, left: number, ydoc: Y.Doc) {
   const paddingEl = document.getElementById('editor-padding')!;
   if (!paddingEl) return;
   paddingEl.style.paddingTop = `${top}mm`;
@@ -494,10 +495,10 @@ function applyMargins(top: number, right: number, bottom: number, left: number, 
   const dpi = 96;
   const mmToPx = dpi / 2.54 / 10; // 1 cm = 10 mm
 
-  setPadding('Top', top * mmToPx, ydoc);
-  setPadding('Right', right * mmToPx, ydoc);
-  setPadding('Bottom', bottom * mmToPx, ydoc);
-  setPadding('Left', left * mmToPx, ydoc);
+  setPadding('Top', top * mmToPx, ydoc, true);
+  setPadding('Right', right * mmToPx, ydoc, true);
+  setPadding('Bottom', bottom * mmToPx, ydoc, true);
+  setPadding('Left', left * mmToPx, ydoc, true);
 }
 
 export function erstelleToolbar(container: HTMLElement, editor: Editor, ydoc: Y.Doc) {
@@ -631,21 +632,14 @@ export function erstelleToolbar(container: HTMLElement, editor: Editor, ydoc: Y.
 
   // 🔄 Seitenorientierung umschalten
   const orientationDropdown = iconButton('/icons/other-icons/flip.svg', 'Seitenorientierung', () => {
+    
     const documentEl = document.getElementById('document');
     if (!documentEl) return;
-
     let isLandscape = documentEl.style.width === '1123px';
     isLandscape = !isLandscape;
+    setOrientation(isLandscape? "landscape" : "portrait", ydoc, true);
+    updateOrientation(ydoc);//Only updates the rulers
 
-    if (isLandscape) {
-      documentEl.style.width = '1123px';
-      documentEl.style.height = '794px';
-      orientationToggle.textContent = 'Hochformat';
-    } else {
-      documentEl.style.width = '794px';
-      documentEl.style.height = '1123px';
-      orientationToggle.textContent = 'Querformat';
-    }
   });
 
   toolbar.appendChild(orientationDropdown);
@@ -799,4 +793,14 @@ function createColorDropdown(svgPath: string, tooltip: string, onSelect: (color:
 
 
 
-
+export function initPaddingFromSharedMap(paddingEl: HTMLElement, yPadding: Y.Map<string>) {
+    const paddingValues: Record<string, string> = {};
+    ["top", "right", "bottom", "left"].forEach((side) => {
+      const val = yPadding.get(side);
+      if (val) {
+      paddingEl.style[`padding${side.charAt(0).toUpperCase() + side.slice(1)}` as any] = val;
+      paddingValues[side] = val;
+      }
+    });
+    return paddingValues;
+};
