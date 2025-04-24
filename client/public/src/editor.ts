@@ -11,13 +11,14 @@ import TableRow from '@tiptap/extension-table-row';
 import TableHeader from '@tiptap/extension-table-header';
 import TextStyle from '@tiptap/extension-text-style';
 import { YjsExtension } from "./YjsExtensions";
-import { applyMargins, erstelleToolbar, initPaddingFromSharedMap } from "./toolbar";
+import { erstelleToolbar } from "./toolbar";
 import { enforceTableMaxWidth } from "./tableSizing";
-import { updateRulerHandle, removeRulers } from "./ruler";
-import { updateActiveState } from "./toolbar";
 import { createAndAddUserCursor, getAllUserCursors, removeUserCursor, updateUserCursorPostion } from "./userCursors";
 import setupRulers from './ruler';
 import * as Y from "yjs";
+import { setPadding, applyMargins, setOrientation, updateOrientation } from "./utils";
+import { updateActiveState } from "./toolbarExtensions/createButtons";
+import { userCursorLogs, otherLogs } from "./globalConstants";
 
 import CustomTableCell from "./customExtensions/CutsomTableCell";
 import FontSize from "./customExtensions/FontSize";
@@ -47,7 +48,7 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
   };
 
   if(provider.awareness == null) {
-    console.error("[CRDT] Awareness ist null. Überprüfe die Verbindung.");
+    if(otherLogs) console.error("[CRDT] Awareness ist null. Überprüfe die Verbindung.");
     return;
   }
 
@@ -89,13 +90,13 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
 
 
   provider.on("synced", () => {
-    console.log("[Hocuspocus] Synchronisiert:", provider.synced, " Dokument:", dokumentName, " Entferne Ladeindikator");
+    if(otherLogs) console.log("[Hocuspocus] Synchronisiert:", provider.synced, " Dokument:", dokumentName, " Entferne Ladeindikator");
     entferneLadeIndikator();
     const paddingValues = initPaddingFromSharedMap(paddingEl, yPadding);
     zeigeEditorAnsicht();
 
     const currentOrientation = yOrientation.get("mode");
-    console.log("[CRDT] Aktuelle Orientierung:", currentOrientation);
+    if(otherLogs) console.log("[CRDT] Aktuelle Orientierung:", currentOrientation);
     if (currentOrientation === undefined) {
       yOrientation.set("mode", "portrait");
     } else if (currentOrientation === "landscape") {
@@ -104,7 +105,7 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
     //portrait ist default also das muss nicht gesetzt werden
 
     if (paddingEl && editor) {
-      console.log("[CRDT] Padding-Element gefunden:", paddingValues);
+      if(otherLogs) console.log("[CRDT] Padding-Element gefunden:", paddingValues);
       if(paddingValues.top === undefined || paddingValues.right === undefined || paddingValues.bottom === undefined || paddingValues.left === undefined) {
         applyMargins(25, 25, 20, 25, ydoc); //Padding in mm
         const dpi = 96;
@@ -147,7 +148,7 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
 
     if(provider.awareness != null) {
       provider.awareness.on('change', (change: { added: number[]; updated: number[]; removed: number[] }) => {
-        console.log("[CRDT] Awareness hat sich geändert:", provider.awareness?.getStates(), change);
+        if(userCursorLogs) console.log("[CRDT] Awareness hat sich geändert:", provider.awareness?.getStates(), change);
         if (provider.awareness == null) return;
         const currentCursors = getAllUserCursors();
         const currentClients = provider.awareness.getStates();
@@ -160,7 +161,7 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
             const newClients = Array.from(currentClients.keys()).filter((clientId) => 
               clientId !== provider.awareness?.clientID && !currentCursorsIds.includes(clientId)
             );
-            console.log("[CRDT] Neue Clients:", newClients, " Aktuelle Clients:", currentCursorsIds);
+            if(userCursorLogs) console.log("[CRDT] Neue Clients:", newClients, " Aktuelle Clients:", currentCursorsIds);
             newClients.forEach((clientId) => {
               const clientState = currentClients.get(clientId);
               if (clientState) {
@@ -174,7 +175,7 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
               .filter((clientId) => clientId !== provider.awareness?.clientID)
               .map((clientId) => `user-cursor-${clientId}`);
             const removedClientIds = Array.from(currentCursors.keys()).filter((cursorId) => !currentClientIds.includes(cursorId.toString()));
-            console.log("[CRDT] Entfernte Clients:", removedClientIds, " Aktuelle Clients:", currentClientIds);
+            if(userCursorLogs) console.log("[CRDT] Entfernte Clients:", removedClientIds, " Aktuelle Clients:", currentClientIds);
             removedClientIds.forEach((clientId) => {
               removeUserCursor(clientId);
             });
@@ -182,7 +183,7 @@ export function setupCRDTEditor(container: HTMLElement, dokumentName: string) {
         }else{
           if(change.updated.length > 0) {
             change.updated.forEach((clientId) => {
-              console.log("[CRDT] Aktualisiere Cursor-Position für Client:", clientId);
+              if(userCursorLogs) console.log("[CRDT] Aktualisiere Cursor-Position für Client:", clientId);
               updateUserCursorPostion(clientId);
             });
           }
@@ -227,70 +228,5 @@ function monitorColumnResize(editor: Editor) {
       setTimeout(() => enforceTableMaxWidth(editor), 10);
     }
   });
-}
-
-export function setPadding(side: "Left" | "Top" | "Right" | "Bottom", px: number, ydoc: Y.Doc, update: boolean = true) {
-  const yPadding = getSharedPaddingMap(ydoc);
-  const paddingEl = document.getElementById("editor-padding")!;
-  paddingEl.style[`padding${side}` as any] = `${px}px`;
-  if (update) {
-  yPadding.set(side.toLowerCase(), `${px}px`);
-  }
-  const documentEl = document.getElementById('document');
-  if (!documentEl) return;
-  if(side === "Left") {
-    updateRulerHandle("Horizontal-Left", px, documentEl);
-  }else if(side === "Top") {
-    updateRulerHandle("Vertical-Top", px, documentEl);
-  }else if(side === "Right") {
-    updateRulerHandle("Horizontal-Right", px, documentEl);
-  }else if(side === "Bottom") {
-    updateRulerHandle("Vertical-Bottom", px, documentEl);
-  }
-}
-
-export function setOrientation(orientation: "portrait" | "landscape", ydoc: Y.Doc, update: boolean = true) {
-  const yOrientation = getSharedOrientationMap(ydoc);
-  if (update) {
-    yOrientation.set("mode", orientation);
-  }
-  const documentEl = document.getElementById('document');
-  if (!documentEl) return;
-
-  if (orientation === "landscape") {
-    documentEl.style.width = '1123px';
-    documentEl.style.height = '794px';
-    orientationToggle.textContent = 'Hochformat';
-  } else {
-    documentEl.style.width = '794px';
-    documentEl.style.height = '1123px';
-    orientationToggle.textContent = 'Querformat';
-  }
-}
-
-// Funktion die ausschließlich die Orientierung der Lineale ändert
-export function updateOrientation(ydoc: Y.Doc) {
-  const documentEl = document.getElementById('document');
-  if (!documentEl) return;
-  removeRulers();
-  let toggleViewRuler = false;
-  const linealVert = document.getElementById('ruler-vertical');
-  const linealHorizontal = document.getElementById('ruler-row-id');
-  if (!linealVert || !linealHorizontal) return;
-  if(!(linealVert.style.display === 'flex' && linealHorizontal.style.display === 'flex')) {
-    linealVert.style.display = linealVert.style.display === 'none' ? 'flex' : 'none';
-    linealHorizontal.style.display = linealHorizontal.style.display === 'none' ? 'flex' : 'none';
-    toggleViewRuler = true;
-  }
-  const yPadding = getSharedPaddingMap(ydoc);
-  const paddingEl = document.getElementById("editor-padding")!;
-  const paddingValues = initPaddingFromSharedMap(paddingEl, yPadding);
-  if(!paddingValues) return;
-  setupRulers(documentEl, ydoc, paddingValues);
-  if(toggleViewRuler) {
-    linealVert.style.display = linealVert.style.display === 'none' ? 'flex' : 'none';
-    linealHorizontal.style.display = linealHorizontal.style.display === 'none' ? 'flex' : 'none';
-    toggleViewRuler = false;
-  }
 }
 

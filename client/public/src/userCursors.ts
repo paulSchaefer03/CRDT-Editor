@@ -1,3 +1,4 @@
+import { userCursorLogs } from './globalConstants';
 
 const userCursorMap: Map<number, UserCursor> = new Map();
 
@@ -159,11 +160,11 @@ class UserCursor {
   private startToggleCursorOpacity() {
     const interval = setInterval(() => {
       if(this.stopToggleCursorOpacity) {
-        console.log('Stop toggle cursor opacity', this.uniqueUserID);
+        if(userCursorLogs) console.log('Stop toggle cursor opacity', this.uniqueUserID);
         clearInterval(interval);
         return;
       }
-      console.log('Toggle cursor opacity', this.uniqueUserID);
+      if(userCursorLogs) console.log('Toggle cursor opacity', this.uniqueUserID);
       if (this.cursor.style.opacity === '0') {
         this.cursor.style.opacity = '1';
         this.cursorDot.style.opacity = '1';
@@ -176,7 +177,7 @@ class UserCursor {
 
 
   public updatePosition(){
-    console.log('Update position of user cursor', this.uniqueUserID);
+    if(userCursorLogs) console.log('Update position of user cursor', this.uniqueUserID);
 
     let elapsedTime = 0;
     const interval = 1;
@@ -185,7 +186,7 @@ class UserCursor {
     const intervalId = setInterval(() => {
       this.invisibleCursor = document.getElementById(`ivisible-user-cursor-${this.uniqueUserID}`) as HTMLDivElement;
       if (this.invisibleCursor === null) {
-        console.log('Invisible cursor not found');
+        if(userCursorLogs) console.log('Invisible cursor not found');
       }
       else {
         if (this.cursorPosition.left !== this.invisibleCursor.offsetLeft + (this.paddingParentElement.get('left') || 0)
@@ -195,18 +196,18 @@ class UserCursor {
            left: this.invisibleCursor.offsetLeft + (this.paddingParentElement.get('left') || 0),
            top: this.invisibleCursor.offsetTop + (this.paddingParentElement.get('top') || 0),
          };
-         console.log('Cursor position has changed in ', elapsedTime, 'ms');
+         if(userCursorLogs) console.log('Cursor position has changed in ', elapsedTime, 'ms');
          //Style koordniaten für restliche logik ungeeignet
          const rect = this.invisibleCursor.getBoundingClientRect();
          const parentRect = this.parentElement.getBoundingClientRect();
          const left = rect.left - parentRect.left;
          const top = rect.top - parentRect.top;
 
-         console.log('Cursor position:', invisibleCursorPosition.left, invisibleCursorPosition.top, "TEST: ", top, left);
-         console.log('Old cursor position:', this.cursorPosition.left, this.cursorPosition.top);
+         if(userCursorLogs) console.log('Cursor position:', invisibleCursorPosition.left, invisibleCursorPosition.top, "TEST: ", top, left);
+         if(userCursorLogs) console.log('Old cursor position:', this.cursorPosition.left, this.cursorPosition.top);
          const cursorHeigth = this.invisibleCursor.offsetHeight;
-         console.log('Invisible cursor height:', this.invisibleCursor);
-         console.log('Line Height Invisible Cursor:', cursorHeigth);
+         if(userCursorLogs) console.log('Invisible cursor height:', this.invisibleCursor);
+         if(userCursorLogs) console.log('Line Height Invisible Cursor:', cursorHeigth);
          this.cursorPosition.left = invisibleCursorPosition.left;
          this.cursorPosition.top = invisibleCursorPosition.top;
          this.cursorDotPosition.left = invisibleCursorPosition.left;
@@ -218,7 +219,7 @@ class UserCursor {
        }
       }
       if (elapsedTime >= timeout) {
-        console.log('Timeout reached, stopping interval');
+        if(userCursorLogs) console.log('Timeout reached, stopping interval');
         clearInterval(intervalId);
         return;
       }
@@ -282,7 +283,7 @@ class UserCursor {
       this.paddingParentElement.set('left', parseFloat(computedStyle.paddingLeft) || 0);
       //update postion and Padding of ALL cursors because of padding is relevant for all cursors
       const allCursors = getAllUserCursors();
-      console.log('Padding of parent element has changed, updating cursor position', allCursors);
+      if(userCursorLogs) console.log('Padding of parent element has changed, updating cursor position', allCursors);
       allCursors.forEach((cursor) => { 
         cursor.paddingParentElement.set('top', parseFloat(computedStyle.paddingTop) || 0);
         cursor.paddingParentElement.set('right', parseFloat(computedStyle.paddingRight) || 0);

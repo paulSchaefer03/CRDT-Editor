@@ -1,4 +1,4 @@
-import { setPadding } from "./editor";
+import { setPadding } from "./utils";
 import * as Y from "yjs";
 const dpi = 96;
 const cmToPx = dpi / 2.54;
